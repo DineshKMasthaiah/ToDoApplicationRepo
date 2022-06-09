@@ -1,9 +1,9 @@
-package com.example.todoapplication.ui.login
+package com.example.todoapplication.viewmodel
 
 /**
  * User details post authentication that is exposed to the UI
  */
-data class LoggedInUserView(
+data class PostLoginViewModel(
         val displayName: String
         //... other data fields that may be accessible to the UI
 )

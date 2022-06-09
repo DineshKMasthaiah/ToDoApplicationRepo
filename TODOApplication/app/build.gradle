@@ -37,7 +37,7 @@ android {
         prod {
             dimension 'myFlavorDimension'
             def base_login_url = "https://reqres.in"
-            def common_api_path = "api/"
+            def common_api_path = "api"
             buildConfigField "String", "LOGIN_URL", "\"${base_login_url}/${common_api_path}/\""
         }
     }

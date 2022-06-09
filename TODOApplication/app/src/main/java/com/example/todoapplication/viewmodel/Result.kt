@@ -1,4 +1,4 @@
-package com.example.todoapplication.data
+package com.example.todoapplication.viewmodel
 
 /**
  * A generic class that holds a value with its loading status.

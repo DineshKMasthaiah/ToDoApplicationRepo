@@ -1,4 +1,4 @@
-package com.example.todoapplication.ui.login
+package com.example.todoapplication.view.login
 
 /**
  * Data validation state of the login form.

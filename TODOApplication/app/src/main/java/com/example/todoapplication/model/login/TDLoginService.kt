@@ -1,6 +1,8 @@
-package com.example.todoapplication.api
+package com.example.todoapplication.model.login
 
-import com.example.todoapplication.data.LoginDataSource
+import com.example.todoapplication.model.api.BackendCallback
+import com.example.todoapplication.model.api.BackendResult
+import com.example.todoapplication.model.api.TDApiClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

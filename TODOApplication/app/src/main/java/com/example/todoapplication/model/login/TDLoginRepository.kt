@@ -1,9 +1,8 @@
-package com.example.todoapplication.data
+package com.example.todoapplication.model.login
 
-import com.example.todoapplication.api.BackendResult
-import com.example.todoapplication.api.TDLoginRequest
-import com.example.todoapplication.api.TDLoginService
-import com.example.todoapplication.data.model.LoggedInUser
+import com.example.todoapplication.model.TDUser
+import com.example.todoapplication.model.api.BackendResult
+import com.example.todoapplication.viewmodel.Result
 
 /**
  * Class that requests authentication and user information from the remote data source and
@@ -13,7 +12,7 @@ import com.example.todoapplication.data.model.LoggedInUser
 class TDLoginRepository(val dataSource: TDLoginService) {
 
     // in-memory cache of the loggedInUser object
-    var user: LoggedInUser? = null
+    var user: TDUser? = null
         private set
 
     val isLoggedIn: Boolean
@@ -30,14 +29,14 @@ class TDLoginRepository(val dataSource: TDLoginService) {
         //dataSource.logout()
     }
 
-    fun login(username: String, password: String): Result<LoggedInUser> {
+    fun login(username: String, password: String): Result<TDUser> {
         // handle login
-        var result = Result.Success(LoggedInUser(displayName = "",userId =""))
+        var result = Result.Success(TDUser(displayName = "", userId = ""))
         val loginRequest = TDLoginRequest(email = username,password = password)
         dataSource.doLogin(loginRequest){response ->
             when(response){
                 is BackendResult.Success -> {
-                    result = Result.Success(LoggedInUser(displayName = "",userId =""))
+                    result = Result.Success(TDUser(displayName = "", userId = ""))
                     setLoggedInUser(result.data)
                 }
                 else ->{
@@ -49,8 +48,8 @@ class TDLoginRepository(val dataSource: TDLoginService) {
         return result
     }
 
-    private fun setLoggedInUser(loggedInUser: LoggedInUser) {
-        this.user = loggedInUser
+    private fun setLoggedInUser(TDUser: TDUser) {
+        this.user = TDUser
         // If user credentials will be cached in local storage, it is recommended it be encrypted
         // @see https://developer.android.com/training/articles/keystore
     }

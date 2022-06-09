@@ -1,5 +1,6 @@
-package com.example.todoapplication.api
+package com.example.todoapplication.model.api
 
+import com.example.todoapplication.BuildConfig
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -24,7 +25,7 @@ object TDApiClient {
         }.build();
         val client = Retrofit.Builder()
             .client(okHttpClient)
-            .baseUrl("")
+            .baseUrl(BuildConfig.LOGIN_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         service = client.create(TDApiInterface::class.java)

@@ -1,9 +1,9 @@
-package com.example.todoapplication.ui.login
+package com.example.todoapplication.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.todoapplication.data.LoginDataSource
-import com.example.todoapplication.data.TDLoginRepository
+import com.example.todoapplication.model.login.TDLoginService
+import com.example.todoapplication.model.login.TDLoginRepository
 
 /**
  * ViewModel provider factory to instantiate LoginViewModel.
@@ -16,7 +16,7 @@ class LoginViewModelFactory : ViewModelProvider.Factory {
         if (modelClass.isAssignableFrom(LoginViewModel::class.java)) {
             return LoginViewModel(
                     loginRepository = TDLoginRepository(
-                            dataSource = LoginDataSource()
+                            dataSource = TDLoginService()
                     )
             ) as T
         }

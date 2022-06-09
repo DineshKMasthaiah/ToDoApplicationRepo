@@ -1,4 +1,4 @@
-package com.example.todoapplication.api
+package com.example.todoapplication.model.login
 
 data class TDLoginResponse(
     val token: String = ""

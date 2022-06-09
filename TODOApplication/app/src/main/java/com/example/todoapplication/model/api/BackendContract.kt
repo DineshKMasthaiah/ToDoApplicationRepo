@@ -1,4 +1,4 @@
-package com.example.todoapplication.api
+package com.example.todoapplication.model.api
 
 typealias BackendCallback<T> = (BackendResult<T>) -> Unit
 
