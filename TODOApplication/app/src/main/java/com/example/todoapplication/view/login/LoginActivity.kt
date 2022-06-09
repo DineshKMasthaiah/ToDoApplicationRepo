@@ -39,31 +39,32 @@ class LoginActivity : AppCompatActivity() {
                 .get(LoginViewModel::class.java)
         //TODO:case 1: when fields are populated with default values
         if (loginButton.text.toString().isNotEmpty() && passwordField.text.toString().isNotEmpty()) {
-            loginViewModel.loginDataChanged(loginButton.text.toString(), passwordField.text.toString())
+            loginViewModel.onLoginFormDataChanged(loginButton.text.toString(), passwordField.text.toString())
         }
 //TODO: register observer to observe on the live data fields Login Form field
-        loginViewModel.loginFormState.observe(this@LoginActivity, Observer { //TODO: onChanged() lambda is called, it -> LoginFormState
-            val loginState = it ?: return@Observer
+        loginViewModel.loginFormValidationState.observe(this@LoginActivity, Observer {
+            //TODO: onChanged() lambda is called, it -> LoginFormState
+            val loginFormState = it ?: return@Observer
             //TODO: disable login button unless both username / password is valid
-            loginButton.isEnabled = loginState.isDataValid
+            loginButton.isEnabled = loginFormState.isDataValid
 
            //TODO: enable error
-            if (loginState.usernameError != null) {
-                usernameField.error = getString(loginState.usernameError)
+            if (loginFormState.usernameError != null) {
+                usernameField.error = getString(loginFormState.usernameError)
             }
-            if (loginState.passwordError != null) {
-                passwordField.error = getString(loginState.passwordError)
+            if (loginFormState.passwordError != null) {
+                passwordField.error = getString(loginFormState.passwordError)
             }
         })
           //TODO:Observe  Login response
-        loginViewModel.loginState.observe(this@LoginActivity, Observer {
-            val loginState = it ?: return@Observer //TODO: what this return do? check later
+        loginViewModel.loginResult.observe(this@LoginActivity, Observer {
+            val loginResult = it ?: return@Observer //TODO: what this return do? check later
 
             progressBar.visibility = View.GONE
-            if (loginState.error != null) {
-                showLoginFailed(loginState.error)
+            if (loginResult.error != null) {
+                showLoginFailed(loginResult.error)
             }
-            if (loginState.success != null) {
+            if (loginResult.success != null) {
                 startActivity(Intent(this, HomeActivity::class.java))
             }
         })
@@ -72,7 +73,7 @@ class LoginActivity : AppCompatActivity() {
         2. on clicking on Done Action key on keyboard
         */
         usernameField.afterTextChanged {
-            loginViewModel.loginDataChanged(
+            loginViewModel.onLoginFormDataChanged(
                     usernameField.text.toString(),
                     passwordField.text.toString()
             )
@@ -81,7 +82,7 @@ class LoginActivity : AppCompatActivity() {
         passwordField.apply {
             //Lambda that gets called when data changed in Fields
             afterTextChanged {
-                loginViewModel.loginDataChanged(
+                loginViewModel.onLoginFormDataChanged(
                         usernameField.text.toString(),
                         passwordField.text.toString()
                 )
@@ -90,7 +91,7 @@ class LoginActivity : AppCompatActivity() {
             setOnEditorActionListener { _, actionId, _ ->//other 2 params are 1.TextView, 3.KeyEvent
                 when (actionId) {
                     EditorInfo.IME_ACTION_DONE -> //TODO: when Done action key (right mark) is clicked on key board
-                        loginViewModel.login(usernameField.text.toString(), passwordField.text.toString()
+                        loginViewModel.performLogin(usernameField.text.toString(), passwordField.text.toString()
                         )
                 }
                 false //TODO: return false to indicate that we haven't consumed this event and let other listener act for it.
@@ -98,7 +99,7 @@ class LoginActivity : AppCompatActivity() {
 
             loginButton.setOnClickListener {
                 progressBar.visibility = View.VISIBLE
-                loginViewModel.login(usernameField.text.toString(), passwordField.text.toString())
+                loginViewModel.performLogin(usernameField.text.toString(), passwordField.text.toString())
             }
         }
     }

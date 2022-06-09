@@ -5,5 +5,6 @@ package com.example.todoapplication.model
  */
 data class TDUser(
         val userId: String,
-        val displayName: String
+        val displayName: String,
+        val token: String
 )

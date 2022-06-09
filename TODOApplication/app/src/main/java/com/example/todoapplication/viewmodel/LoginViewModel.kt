@@ -7,43 +7,58 @@ import android.util.Patterns
 import com.example.todoapplication.model.login.TDLoginRepository
 
 import com.example.todoapplication.R
-import com.example.todoapplication.view.login.LoginFormState
-import com.example.todoapplication.view.login.LoginState
+import com.example.todoapplication.model.TDUser
+import com.example.todoapplication.model.api.BackendResult
+import com.example.todoapplication.view.login.LoginFormValidationState
+import com.example.todoapplication.view.login.TDLoginResult
 
 class LoginViewModel(private val loginRepository: TDLoginRepository) : ViewModel() {
 
-    private val _loginForm = MutableLiveData<LoginFormState>()
-    val loginFormState: LiveData<LoginFormState> = _loginForm
+    /**
+     *  LoginForm validation state live data  that publishes login form validation result on entering the data into fields
+     */
+    private val _loginFormValidationState = MutableLiveData<LoginFormValidationState>()
+    val loginFormValidationState: LiveData<LoginFormValidationState> = _loginFormValidationState
 
-//TODO: navigate to next screen if login is successful
-    private val _loginResult = MutableLiveData<LoginState>()
-    val loginState: LiveData<LoginState> = _loginResult
+    /**
+     * LoginResult livedata field that publishes login result changes to the subscribed observers(ex:Login Activity)
+     */
+    private val _loginResult = MutableLiveData<TDLoginResult>()
+    val loginResult: LiveData<TDLoginResult> = _loginResult
 
-    //TODO: Actual login method that activity calls on pressing login button
-    //calls login repo in turn and returns the LoginUserObject
-    fun login(username: String, password: String) {
+
+    /**
+     * Activity calls it when the validation of input values for login form is completed.
+     */
+    fun performLogin(username: String, password: String) {
         // can be launched in a separate asynchronous job
-        val result = loginRepository.login(username, password)
-
-        if (result is Result.Success) {
-            _loginResult.value = LoginState(success = PostLoginViewModel(displayName = result.data.displayName))
-        } else {
-            _loginResult.value = LoginState(error = R.string.login_failed)
-        }
+        when(val result:BackendResult<TDUser> = loginRepository.login(username, password)){
+             is BackendResult.Success ->{
+                 _loginResult.value = TDLoginResult(success = PostLoginViewModel(displayName = (result.data as TDUser).displayName))
+             }
+             else ->{
+                 _loginResult.value = TDLoginResult(error = R.string.login_failed)
+             }
+         }
     }
 
-    //Activity calls when data in the form is edited/added/removed
-    fun loginDataChanged(username: String, password: String) {
+    /**
+     * Login Activity calls this method when data in the form is edited/added/removed.
+     * The Login Activity is called back via an observer registered, post-validation of the value entered in the form
+     */
+    fun onLoginFormDataChanged(username: String, password: String) {
         if (!isUserNameValid(username)) {
-            _loginForm.value = LoginFormState(usernameError = R.string.invalid_username)
+            _loginFormValidationState.value = LoginFormValidationState(usernameError = R.string.invalid_username)
         } else if (!isPasswordValid(password)) {
-            _loginForm.value = LoginFormState(passwordError = R.string.invalid_password)
+            _loginFormValidationState.value = LoginFormValidationState(passwordError = R.string.invalid_password)
         } else {
-            _loginForm.value = LoginFormState(isDataValid = true)
+            _loginFormValidationState.value = LoginFormValidationState(isDataValid = true)
         }
     }
 
-    // A placeholder username validation check
+    /**
+     * Add username validation logic here.. ex: email validation if email is used as username
+     */
     private fun isUserNameValid(username: String): Boolean {
         return if (username.contains('@')) {
             Patterns.EMAIL_ADDRESS.matcher(username).matches()
@@ -52,8 +67,8 @@ class LoginViewModel(private val loginRepository: TDLoginRepository) : ViewModel
         }
     }
 
-    // A placeholder password validation check
-    private fun isPasswordValid(password: String): Boolean {
-        return password.length > 5
-    }
+    /**
+     * Add password validation logic here.. ex: length validation if pwd length is > 5
+     */
+    private fun isPasswordValid(password: String): Boolean  = password.length > 5
 }
