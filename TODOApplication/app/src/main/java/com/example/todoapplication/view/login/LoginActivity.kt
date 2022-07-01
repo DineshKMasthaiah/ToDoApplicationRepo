@@ -14,7 +14,7 @@ import android.widget.EditText
 import android.widget.Toast
 import com.example.todoapplication.databinding.ActivityLoginBinding
 
-import com.example.todoapplication.view.HomeActivity
+import com.example.todoapplication.view.home.HomeActivity
 import com.example.todoapplication.viewmodel.LoginViewModel
 import com.example.todoapplication.viewmodel.LoginViewModelFactory
 
